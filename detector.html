@@ -9,56 +9,168 @@
       <ul>
         <li><a href="./home.html">Home</a></li>
         <li><a class="active" href="./detector.html">Symptom Detector</a></li>
+        <li><a href="./segment.html">How plastic is your mask?</a></li>
+        <li><a href="./game.html">Game on Mask Plastic Pollution</a></li>
       </ul>
-        <form style= " margin: 30px">
+        <!-- <form style= " margin: 30px" id="my_form"> -->
             <div class="mb-3">
               <label for="exampleInputEmail1" class="form-label">Covid Symptoms</label>
-              <button type="button" class="btn btn-primary form-control" onclick="init()">Check if your eyes are Watering!</button>
-              <div id="emailHelp" class="form-text">Press the start button and enable the camera access and zoom in the camera to your eyes and hold for 5 seconds(take of your glasses if you have them).</div>
+              <button type="button" class="btn btn-primary form-control" onclick="eyes_watery()">Check if your eyes are Watering!</button>
+              <div id="emailHelp" class="form-text">Zoom in the camera to your eyes and hold for 5 seconds(take of your glasses if you have them). Press the start button and enable the camera access.</div>
             </div>
             <div class="mb-3">
-                <button type="button" class="btn btn-primary form-control" onclick="init()">Check if your nose is red!</button>
+                <button type="button" class="btn btn-primary form-control" onclick="red_nose()">Check if your nose is red!</button>
                 <div id="emailHelp" class="form-text">Press the start button and enable the camera access and zoom in the camera to your nose and hold for 5 seconds.</div>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                <input value="1"class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
                 <label class="form-check-label" for="flexRadioDefault1">
                   I am not coughing
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                <input value="2"class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
                 <label class="form-check-label" for="flexRadioDefault2">
                   I am mildly coughing
                 </label>
               </div>
-              <div style="" class="form-check">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" checked>
+              <div class="form-check">
+                <input value="3" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" checked>
                 <label class="form-check-label" for="flexRadioDefault3">
                   I am severely coughing
                 </label>
               </div>
             <div class="mb-3 form-check">
-              <input type="checkbox" class="form-check-input" id="exampleCheck1">
+              <input type="checkbox" id="fever" class="form-check-input" id="exampleCheck1">
               <label class="form-check-label" for="exampleCheck1">I have fever</label>
             </div>
             <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                <input type="checkbox" id="breath" class="form-check-input" id="exampleCheck1">
                 <label class="form-check-label" for="exampleCheck1">I cannot hold my breath for 10 seconds</label>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+            <button type="submit" class="btn btn-primary" onclick="my_func()">Submit</button>
+        <!-- </form> -->
         <div id="webcam-container"></div>
         <div id="label-container"></div>
+        <div id="label-container2"></div>
+        <div id="answer"></div>
+        <div id="p"></div>
+        <div id="k"></div>
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
         <script type="text/javascript">
+          var x = true;
+          var y = true;
+          var p=0;
+          var k=0;
+          function my_func() {
+            var my_var = 0
+            console.log("hhi")
+            console.log("hihhih",document.getElementById('p'))
+            console.log("after p console")
+            p = document.getElementById('p').innerHTML
+            console.log(document.getElementById('breath'))
+            console.log(document.getElementById('fever'))
+            console.log(my_var)
+            if (document.getElementById('fever').checked) {
+              my_var++
+            }
+            if (document.getElementById('breath').checked) {
+              my_var++
+            }
+            if (p === 0) {
+              console.log(4,document.getElementById('answer'))
+              console.log(my_var)
+            } else if (p===1) {
+              p++
+            } else {
+              document.getElementById('answer').innerHTML = "Please check if your eyes and watering"
+            }
+            console.log(k,document.getElementById('k'))
+            console.log(my_var)
+            k = document.getElementById('k').innerHTML
+            if (k === 0) {
+              
+            } else if (k===1) {
+              my_var++
+            } else {
+              document.getElementById('answer').innerHTML = "Please check if your nose is red"
+            }
+            var ele = document.getElementsByName('flexRadioDefault');
+            console.log(ele)
+            console.log(my_var)
+            for(i = 0; i < ele.length; i++) {
+              if(ele[i].checked) {
+                if (ele[i].value === "3") {
+                  my_var = my_var + 2
+                } else if (ele[i].value === "3") {
+                  my_var = my_var + 1
+                } else {}
+              }
+            }
+            console.log(my_var)
+            if (my_var < 3) {
+              document.getElementById('answer').innerHTML = 'You are might not be showing symptoms of Covid-19.'
+            } else {
+              document.getElementById('answer').innerHTML = 'You might be showing symptoms of Covid-19. Please visit a doctor and take a covid test as soon as possible.'
+            }
+          }
+
+          function eyes_watery() {
+              const URL = "https://teachablemachine.withgoogle.com/models/QrSvwpkp9/";
+
+              let model, webcam, labelContainer, maxPredictions;
+              async function init() {
+                  const modelURL = URL + "model.json";
+                  const metadataURL = URL + "metadata.json";
+                  model = await tmImage.load(modelURL, metadataURL);
+                  maxPredictions = model.getTotalClasses();
+                  const flip = true;
+                  webcam = new tmImage.Webcam(200, 200, flip);
+                  await webcam.setup();
+                  await webcam.play();
+                  window.requestAnimationFrame(loop);
+                  document.getElementById("webcam-container").appendChild(webcam.canvas);
+                  labelContainer = document.getElementById("label-container");
+                  for (let i = 0; i < maxPredictions; i++) {
+                      labelContainer.appendChild(document.createElement("div"));
+                  }
+              }
+
+              async function loop() {
+                  webcam.update();
+                  await predict();
+                  window.requestAnimationFrame(loop);
+              }
+
+              async function predict() {
+                  const prediction = await model.predict(webcam.canvas);
+                  for (let i = 0; i < maxPredictions; i++) {
+                      const classPrediction =
+                      prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+                      labelContainer.childNodes[i].innerHTML = classPrediction;
+                  }
+                  if(x===true) {
+                    if(prediction[1].probability.toFixed(2)>0.5){
+                      p=1;
+                      console.log("hi2",p, prediction[1].probability.toFixed(2))
+                    }
+                    else{
+                      p=0
+                      console.log("hi",p)
+                    }
+                    x = false
+                  }
+              }
+            init();
+          }
+
+          function red_nose() {
             // More API functions here:
             // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
 
             // the link to your model provided by Teachable Machine export panel
-            const URL = "https://teachablemachine.withgoogle.com/models/QrSvwpkp9/";
-
+            const URL = "https://teachablemachine.withgoogle.com/models/1y69TbjFj/";
             let model, webcam, labelContainer, maxPredictions;
 
             // Load the image model and setup the webcam
@@ -82,7 +194,7 @@
 
                 // append elements to the DOM
                 document.getElementById("webcam-container").appendChild(webcam.canvas);
-                labelContainer = document.getElementById("label-container");
+                labelContainer = document.getElementById("label-container2");
                 for (let i = 0; i < maxPredictions; i++) { // and class labels
                     labelContainer.appendChild(document.createElement("div"));
                 }
@@ -100,10 +212,25 @@
                 const prediction = await model.predict(webcam.canvas);
                 for (let i = 0; i < maxPredictions; i++) {
                     const classPrediction =
-                        prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+                    prediction[i].className + ": " + prediction[i].probability.toFixed(2);
                     labelContainer.childNodes[i].innerHTML = classPrediction;
+                  if(y===true) {
+                    if(prediction[1].probability.toFixed(2)>0.5){
+                    k=1;
+                    console.log(k, prediction[1].probability.toFixed(2))
+                  }
+                  else{
+                    k=0
+                    console.log(k)
+                  }
+                  y=false
+                
+                }
+                  
                 }
             }
+            init();
+          }
         </script>
     </body>
 </html>

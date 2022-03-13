@@ -12,7 +12,7 @@ li {
 
 li a {
   display: block;
-  color: white;
+  color: rgb(180, 180, 180);
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
@@ -44,7 +44,7 @@ body {
 /* Position the navbar container inside the image */
 .container {
   position: absolute;
-  margin: 20px;
+  margin: 25px;
   width: auto;
 }
 
